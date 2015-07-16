@@ -33,18 +33,25 @@ def a_single_tour
   # Enter the search bar
   search_input = driver.find_element(:css => ".searchBarInput input")
 
-  hello_array = ['Ready?', 'One Cloud', 'Hello', 'Hola', '您好', 'こんにちは']
+  hello_array = ['Ready?', 'Export to cloud', 'Hello', 'Hola', '您好', 'こんにちは']
 
   count = 0
   hello_array.each do |hello_string|
     search_input_array = hello_string.split('')
+    
+    char_count = 0
+    
     search_input_array.each { |c|
-    	sleep(0.2)
+    	sleep(0.1)
     	search_input.send_keys c
+      
+      # buffer time between phrases
+      next if char_count != search_input_array.length - 1
+      sleep(0.2)
     }.each { |c|
       sleep(0.1)
-    }.each { |c|
-      sleep(0.1)
+
+      # search for last phrase
       next if count == hello_array.length - 1
       search_input.send_keys("\b")
     }
@@ -92,9 +99,12 @@ def a_single_tour
   sleep(0.5)
 
   # Export now and wait for cloud modal
-  export_png_now = driver.find_elements(:css => '.btn')
-  binding.pry
+  export_png_now = driver.find_element(:css => '.modal-footer .btn')
   export_png_now.click()
+  binding.pry
+
+  # Wait until it finish processing then cloud modal will pop out
+  # filepicker_modal = driver.find_element(:css => '.fp__header__title ng-binding')
 
 end
 
