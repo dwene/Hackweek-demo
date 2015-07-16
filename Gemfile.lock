@@ -45,4 +45,4 @@ DEPENDENCIES
   capybara (= 2.4.4)
   gemrat (= 0.4.6)
   pry (= 0.10.1)
-  selenium-webdriver
+  selenium-webdriver (= 2.46.2)
