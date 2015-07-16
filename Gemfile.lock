@@ -46,6 +46,3 @@ DEPENDENCIES
   gemrat (= 0.4.6)
   pry (= 0.10.1)
   selenium-webdriver
-
-BUNDLED WITH
-   1.10.5
