@@ -1,5 +1,13 @@
 require 'selenium-webdriver'
 require 'pry'
+
+class Selenium::WebDriver::Element
+  def children
+    self.find_elements(:xpath, "./*")
+  end
+end
+
+
 driver = Selenium::WebDriver.for :chrome
 driver.navigate.to "https://spredfast.com/platform/intelligence/?env=kim-test"
 elements = driver.find_elements(:class, "btn-primary")
@@ -17,8 +25,22 @@ submit.click()
 sleep(5)
 hide_tutorial = driver.find_elements(:class, 'exit')
 hide_tutorial[0].click()
-# binding.pry
+search_input = driver.find_element(:css => ".searchBarInput input")
+search_array = "Flaming Dumpster".split('')
+search_array.each { |char|
+	sleep(0.2)
+	search_input.send_keys char
+}
 
+sleep(1.5)
+
+search_array.each { |char|
+	sleep(0.1)
+	search_input.send_keys "\b"
+}
+
+sleep(0.5)
+binding.pry
 sleep(15)
-driver.close()
+# driver.close()
 
