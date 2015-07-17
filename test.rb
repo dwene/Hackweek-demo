@@ -139,14 +139,14 @@ def a_single_tour
   box_login = box_login[0]
   box_login.send_keys("kimyu92@gmail.com")
   
-  sleep(1)
+  sleep(3)
 
   grab_box_password = Proc.new { driver.find_elements(:css => ".login_password") }
   box_password = retry_method(&grab_box_password)
   box_password = box_password[0]
   box_password.send_keys("abc"+"123"+"456")
 
-  sleep(2)
+  sleep(8)
 
   box_authorize = driver.find_element(:css => ".login_submit")
   box_authorize.click()
