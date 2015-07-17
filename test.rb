@@ -146,7 +146,7 @@ def a_single_tour
   box_password = box_password[0]
   box_password.send_keys("abc"+"123"+"456")
 
-  sleep(1)
+  sleep(2)
 
   box_authorize = driver.find_element(:css => ".login_submit")
   box_authorize.click()
@@ -158,12 +158,26 @@ def a_single_tour
   grant_access_button = grant_access_button[0]
   
   # Before grant, box cloud prevent bot that click so fast
-  sleep(4)
-  switch_tab(driver, 0)
+  # Switch back to intell tab after click
+  sleep(3)
   grant_access_button.click()
+  sleep(0.2)
+  switch_tab(driver, 0)
   sleep(3)
   
-  binding.pry
+
+  # Back to intell tab but always have to go back iframe
+  driver.switch_to.frame(filepicker_modal)
+  
+  # Save the file now. Your file is persistent on cloud
+  grab_save_your_file = Proc.new { driver.find_elements(:css => ".btn--primary") }
+  save_your_file = retry_method(&grab_save_your_file)
+  save_your_file = save_your_file[0]
+  save_your_file.click()
+  
+  # binding.pry
+  sleep(20)
+  driver.close()
 end
 
 # Retry till the element exist
