@@ -120,13 +120,50 @@ def a_single_tour
   filepicker_modal = filepicker_modal[0]
   filepicker_modal.click() # sanity check iframe exists
 
+  # Pause for intro a lil bit on cloud
+  sleep(5)
 
   # Switch to iframe and click Box Cloud
   driver.switch_to.frame(filepicker_modal)
   driver.find_elements(:css => ".sbicon-box")[0].click()
-  puts "hooray llll"
-  binding.pry
+  connect_to_box = driver.find_elements(:css => "a").select { |a| a.text == "Connect to Box" }[0]
+  connect_to_box.click()
 
+  # We all know that open new tab take time
+  sleep(4)
+
+  # Switch to box tab to login
+  switch_tab(driver, 1)
+  grab_box_login = Proc.new { driver.find_elements(:css => ".login_email") }
+  box_login = retry_method(&grab_box_login)
+  box_login = box_login[0]
+  box_login.send_keys("kimyu92@gmail.com")
+  
+  sleep(1)
+
+  grab_box_password = Proc.new { driver.find_elements(:css => ".login_password") }
+  box_password = retry_method(&grab_box_password)
+  box_password = box_password[0]
+  box_password.send_keys("abc"+"123"+"456")
+
+  sleep(1)
+
+  box_authorize = driver.find_element(:css => ".login_submit")
+  box_authorize.click()
+
+
+  # Grant box access
+  grab_grant_access_button = Proc.new { driver.find_elements(:id => "consent_accept_button") }
+  grant_access_button = retry_method(&grab_grant_access_button)
+  grant_access_button = grant_access_button[0]
+  
+  # Before grant, box cloud prevent bot that click so fast
+  sleep(4)
+  switch_tab(driver, 0)
+  grant_access_button.click()
+  sleep(3)
+  
+  binding.pry
 end
 
 # Retry till the element exist
@@ -136,18 +173,37 @@ def retry_method(&block)
     ele_arr = block.call
     break if ele_arr.length > 0
     sleep(1)
-    puts 'checking >>>'
+    puts 'take a sip of cold coffee >>>'
   end 
   ele_arr
 end
 
 
-a_single_tour()
+# Switch tab
+def switch_tab(driver, which_num_tab)
+  window_title = driver.window_handles
+  driver.switch_to.window(window_title[which_num_tab])
+  puts window_title
+end
 
+
+
+# Main Driver Method
+a_single_tour()
 # End of driver
 
 
-# useful iframe handling
+# 1. Useful iframe handling
 # driver.switch_to.default_content()
 # driver.switch_to.frame(0) # can feed in id, object
+
+# 2. Switch tab
+# wnd_titl = driver.window_handles.map do |w|
+#   driver.switch_to.window(w)
+#   [w,driver.title]
+# end
+
+# #required window
+# win_id = wnd_titl.find { |e1,e2| e2 == 'My TITLE' }.first
+# driver.switch_to.window(win_id) #switched to the required window
 
